@@ -1,0 +1,54 @@
+mutation CreateCustomer(
+    $email: String!,
+    $firstName: String!, 
+    $lastName: String!,
+    $phoneNumber: String!,
+    $username: String!,
+    $password: String!) 
+  {
+    createCustomer(
+      email: $email,
+      firstName: $firstName,
+      lastName: $lastName,
+      password: $password,
+      phoneNumber: $phoneNumber,
+      username: $username) 
+      {
+        customer {
+          id,
+          firstName,
+          lastName,
+          phoneNumber,
+          email,
+          createdAt,
+          updatedAt
+        }
+    }
+}
+
+
+mutation UpdateCustomer (
+        $id: Int!,
+        $email: String,
+        $firstName: String,
+        $lastName: String,
+        $phoneNumber: String,
+    ){
+    updateCustomer(
+        id: $id,
+        email: $email,
+        firstName: $firstName,
+        lastName: $lastName,
+        phoneNumber: $phoneNumber,
+    ) {
+        customer {
+            id
+            firstName
+            lastName
+            phoneNumber
+            email
+            createdAt
+            updatedAt
+        }
+    }
+}

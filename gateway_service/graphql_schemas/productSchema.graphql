@@ -1,0 +1,107 @@
+mutation CreateProduct(
+  $code: String!, 
+  $name: String!, 
+  $price: Int!, 
+  $category: JSONString!) 
+  {
+    createProduct(
+      code: $code, 
+      name: $name, 
+      price: $price, 
+      category: $category) {
+        product {
+            id,
+            name,
+            code,
+            category,
+            price,
+            createdAt,
+            updatedAt
+        }
+    }
+}
+
+
+mutation UpdateProduct(
+  $id: Int!, 
+  $category: JSONString, 
+  $code: String, 
+  $name: String, 
+  $price: Int){
+    updateProduct(
+      id: $id, 
+      category: $category, 
+      code: $code, 
+      name: $name, 
+      price: $price
+      ) {
+        product {
+            id,
+            name,
+            code,
+            category,
+            price,
+            createdAt,
+            updatedAt
+        }
+    }
+}
+
+
+query AllProducts {
+    allProducts {
+        id
+        name
+        code
+        category
+        price
+        createdAt
+        updatedAt
+    }
+}
+
+query ProductByCode ($code : String!){
+    productByCode(code: $code) {
+        id
+        name
+        code
+        category
+        price
+        createdAt
+        updatedAt
+    }
+}
+
+query ProductByName($name: String) {
+    productByName(name: $name) {
+        id
+        name
+        code
+        category
+        price
+        createdAt
+        updatedAt
+    }
+}
+
+query ProductByCategory ($category : String! ){
+    productByCategory(category: $category) {
+        id
+        name
+        code
+        category
+        price
+        createdAt
+        updatedAt
+    }
+}
+
+query CategorySummary ($category : String! ){
+    categorySummary(category: $category) {
+        items
+        priceSum
+    }
+}
+
+
+

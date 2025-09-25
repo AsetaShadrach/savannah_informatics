@@ -1,0 +1,11 @@
+apiVersion : v1
+kind : Service
+metadata :
+  name : sav-info-backend-service
+spec :
+  selector :
+    app : sav_info_backend
+  # type : LoadBalancer
+  ports :
+  - port : 8000
+    targetPort : 8000

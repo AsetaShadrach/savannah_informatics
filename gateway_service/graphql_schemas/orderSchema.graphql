@@ -1,0 +1,46 @@
+mutation CreateOrder (
+  $customerId : Int!
+  $orderDetails : JSONString!
+){
+    createOrder(
+      customerId: $customerId, 
+      orderDetails: $orderDetails) 
+      {
+        order {
+            id,
+            orderRef,
+            orderDetails,
+            total,
+            status,
+            createdAt,
+            updatedAt
+        }
+    }
+}
+
+
+
+
+query OrderByCustomerId ($customerId: Int!){
+    orderByCustomerId(customerId: $customerId) {
+        id
+        orderRef
+        orderDetails
+        total
+        status
+        createdAt
+        updatedAt
+    }
+}
+
+query AllOrders {
+    allOrders {
+        id
+        orderRef
+        orderDetails
+        total
+        status
+        createdAt
+        updatedAt
+    }
+}

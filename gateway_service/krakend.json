@@ -1,0 +1,318 @@
+{
+    "version": 3,
+    "name": "SavInfoGtw",
+    "port": 9090,
+    "cache_ttl": "3600s",
+    "timeout": "20000ms",
+    "extra_config": {
+      "security/cors": {
+        "allow_origins": [ "*" ],
+        "allow_methods": [ "POST", "GET" ],
+        "allow_headers": [ "Origin", "Authorization", "Content-Type" ],
+        "expose_headers": [ "Content-Length" ],
+        "max_age": "12h"
+      },
+      "router": {
+        "return_error_msg": true
+      }
+    },
+    "endpoints": [
+        {
+            "endpoint": "/v1/login",
+            "method": "POST",
+            "output_encoding": "no-op",
+            "backend": [
+              {
+                "url_pattern": "/realms/master/protocol/openid-connect/token",
+                "encoding": "json",
+                "sd": "static",
+                "method": "POST",
+                "host": [
+                  "http://localhost:8080"
+                ]
+              }
+            ]
+        },
+        {
+            "endpoint": "/v1/customer/create",
+            "method": "POST",
+            "output_encoding": "no-op",
+            "input_query_strings": [
+              "*"
+            ],
+            "input_headers": [
+              "*"
+            ],
+            "backend": [
+              {
+                "url_pattern": "/customers/gql",
+                "extra_config" :{
+                  "backend/graphql": {
+                    "type":  "mutation",
+                    "query_path": "./graphql_schemas/customerSchema.graphql",
+                    "operationName": "CreateCustomer"
+                  }
+                  
+                },
+                "host": [
+                  "http://localhost:8000"
+                ]
+              }
+            ]
+        },
+        {
+          "endpoint": "/v1/customer/update",
+          "method": "PATCH",
+          "output_encoding": "no-op",
+          "extra_config": {
+            "auth/validator": {
+                "alg": "RS256",
+                "audience": ["http://localhost:8080"],
+                "roles_key": "http://api.example.com/custom/roles",
+                "roles": [],
+                "jwk_url": "http://localhost:8080/auth/realms/master/protocol/openid-connect/certs",
+                "cache": true
+            }
+          },
+    
+          "input_query_strings": [
+            "*"
+          ],
+          "input_headers": [
+            "*"
+          ],
+          "backend": [
+            {
+              "url_pattern": "/customers/gql",
+              "extra_config" :{
+                "backend/graphql": {
+                  "type":  "mutation",
+                  "query_path": "./graphql_schemas/customerSchema.graphql",
+                  "operationName": "UpdateCustomer"
+                }
+              },
+              "host": [
+                "http://localhost:8000"
+              ]
+            }
+          ]
+        },
+        {
+          "endpoint": "/v1/order/create",
+          "method": "POST",
+          "output_encoding": "no-op",
+          "input_query_strings": [
+            "*"
+          ],
+          "input_headers": [
+            "*"
+          ],
+          "backend": [
+            {
+              "url_pattern": "/orders/gql",
+              "extra_config" :{
+                "backend/graphql": {
+                  "type":  "mutation",
+                  "query_path": "./graphql_schemas/orderSchema.graphql",
+                  "operationName": "CreateOrder"
+                }
+              },
+              "host": [
+                "http://localhost:8000"
+              ]
+            }
+          ]
+        },
+        {
+          "endpoint": "/v1/order/update",
+          "method": "PATCH",
+          "output_encoding": "no-op",
+          "input_query_strings": [
+            "*"
+          ],
+          "input_headers": [
+            "*"
+          ],
+          "backend": [
+            {
+              "url_pattern": "/orders/gql",
+              "extra_config" :{
+                "backend/graphql": {
+                  "type":  "mutation",
+                  "query_path": "./graphql_schemas/orderSchema.graphql",
+                  "operationName": "CreateProduct"
+                }
+              },
+              "host": [
+                "http://localhost:8000"
+              ]
+            }
+          ]
+        },
+        {
+          "endpoint": "/v1/order/all-orders",
+          "method": "GET",
+          "output_encoding": "no-op",
+          "input_query_strings": [
+            "*"
+          ],
+          "input_headers": [
+            "*"
+          ],
+          "backend": [
+            {
+              "url_pattern": "/orders/gql",
+              "extra_config" :{
+                "backend/graphql": {
+                  "type":  "query",
+                  "query_path": "./graphql_schemas/orderSchema.graphql",
+                  "operationName": "AllOrders"
+                }
+              },
+              "host": [
+                "http://localhost:8000"
+              ]
+            }
+          ]
+        }, 
+        {
+          "endpoint": "/v1/order/orders/customer/{customerId}",
+          "method": "GET",
+          "output_encoding": "no-op",
+          "input_query_strings": [
+            "*"
+          ],
+          "input_headers": [
+            "*"
+          ],
+          "backend": [
+            {
+              "url_pattern": "/orders/gql",
+              "extra_config" :{
+                "backend/graphql": {
+                  "type":  "query",
+                  "query_path": "./graphql_schemas/orderSchema.graphql",
+                  "operationName": "OrderByCustomerId",
+                  "variables":{
+                    "customerId" : "{= $.customerId ? parseInt($.customerId) : null}"
+                  }
+                }
+              },
+              "host": [
+                "http://localhost:8000"
+              ]
+            }
+          ]
+        },
+        {
+          "endpoint": "/v1/product/create",
+          "method": "POST",
+          "output_encoding": "no-op",
+          "input_query_strings": [
+            "*"
+          ],
+          "input_headers": [
+            "*"
+          ],
+          "backend": [
+            {
+              "url_pattern": "/products/gql",
+              "extra_config" :{
+                "backend/graphql": {
+                  "type":  "mutation",
+                  "query_path": "./graphql_schemas/productSchema.graphql",
+                  "operationName": "CreateProduct"
+                }
+              },
+              "host": [
+                "http://localhost:8000"
+              ]
+            }
+          ]
+        },
+        {
+          "endpoint": "/v1/product/update",
+          "method": "PATCH",
+          "output_encoding": "no-op",
+          "input_query_strings": [
+            "*"
+          ],
+          "input_headers": [
+            "*"
+          ],
+          "backend": [
+            {
+              "url_pattern": "/products/gql",
+              "extra_config" :{
+                "backend/graphql": {
+                  "type":  "mutation",
+                  "query_path": "./graphql_schemas/productSchema.graphql",
+                  "operationName": "UpdateProduct"
+                }
+              },
+              "host": [
+                "http://localhost:8000"
+              ]
+            }
+          ]
+        },
+        {
+          "endpoint": "/v1/product/category/items/{category}",
+          "method": "GET",
+          "output_encoding": "no-op",
+          "input_query_strings": [
+            "*"
+          ],
+          "input_headers": [
+            "*"
+          ],
+          "backend": [
+            {
+              "url_pattern": "/products/gql",
+              "extra_config" :{
+                "backend/graphql": {
+                  "type":  "query",
+                  "query_path": "./graphql_schemas/productSchema.graphql",
+                  "operationName": "ProductByCategory",
+                  "variables":{
+                    "category" : "{category}"
+                  }
+                }
+              },
+              "host": [
+                "http://localhost:8000"
+              ]
+            }
+          ]
+        },
+        {
+          "endpoint": "/v1/product/category/summary/{category}",
+          "method": "GET",
+          "output_encoding": "no-op",
+          "input_query_strings": [
+            "*"
+          ],
+          "input_headers": [
+            "*"
+          ],
+          "backend": [
+            {
+              "url_pattern": "/products/gql",
+              "extra_config" :{
+                "backend/graphql": {
+                  "type":  "query",
+                  "query_path": "./graphql_schemas/productSchema.graphql",
+                  "operationName": "CategorySummary",
+                  "variables":{
+                    "category" : "{category}"
+                  }
+                }
+              },
+              "host": [
+                "http://localhost:8000"
+              ]
+            }
+          ]
+        }
+    ]
+}

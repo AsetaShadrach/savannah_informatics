@@ -1,0 +1,10 @@
+{
+    "realm": "master",
+    "auth-server-url": "https://localhost:8080/",
+    "ssl-required": "external",
+    "resource": "savannahKeycloakClientId",
+    "credentials": {
+      "secret": "eqt9vBsbuQIOVRmegTrAdZ7vvjoUTqnr"
+    },
+    "confidential-port": 0
+}

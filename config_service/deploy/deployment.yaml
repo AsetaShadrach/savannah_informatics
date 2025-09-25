@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind : Deployment
+metadata :
+  name : sav-info-backend
+spec :
+  replicas : 1
+  selector :
+    matchLables :
+      app : sav_info_backend
+  template:
+    metadata:
+      labels:
+        app : sav_info_backend
+    spec :
+      - name : sav_info_backend
+        image : asetashadrach/sav_info_backend
+        ports :
+          - containerPort : 8000
+        imagePullPolicy: Always
