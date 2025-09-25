@@ -68,7 +68,7 @@
             "auth/validator": {
                 "alg": "RS256",
                 "audience": ["http://localhost:8080"],
-                "roles_key": "http://api.example.com/custom/roles",
+                "roles_key": "",
                 "roles": [],
                 "jwk_url": "http://localhost:8080/auth/realms/master/protocol/openid-connect/certs",
                 "cache": true
