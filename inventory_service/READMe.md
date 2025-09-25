@@ -1,1 +1,0 @@
-Python Service for managing all the inventory
