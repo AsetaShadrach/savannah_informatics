@@ -10,7 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3+c$b0-0=%6@x@l%2kd%=)kv(%n6&=#9jb2f(wcib_7c(!u#(3'
+SECRET_KEY = os.getenv("DJANGO_SECURITY_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,6 +45,7 @@ INSTALLED_APPS = [
     'customers.apps.CustomersConfig',
     'orders.apps.OrdersConfig',
     'products.apps.ProductsConfig',
+    'custom_configs.apps.CustomConfigsConfig',
     'graphene_django'
 ]
 
@@ -135,12 +141,12 @@ CSRF_TRUSTED_ORIGINS = ["http://localhost:8000"]
 
 # Keycloak OIDC Configuration
 OIDC_RP_CLIENT_ID = 'savannahKeycloakClientId'
-OIDC_RP_CLIENT_SECRET = 'jlJqLdZwVXlrdZapj3S5YohF22hBAR6F'
+OIDC_RP_CLIENT_SECRET = os.getenv('KEYCLOAK_ADMIN_CLIENT_SECRET')
 OIDC_OP_AUTHORIZATION_ENDPOINT = 'http://localhost:8080/realms/master/protocol/openid-connect/auth'
 OIDC_OP_TOKEN_ENDPOINT = 'http://localhost:8080/realms/master/protocol/openid-connect/token'
 OIDC_OP_USER_ENDPOINT = 'http://localhost:8080/realms/master/protocol/openid-connect/userinfo'
 OIDC_OP_JWKS_ENDPOINT = 'http://localhost:8080/realms/master/protocol/openid-connect/certs'
-OIDC_OP_LOGOUT_URL_METHOD = 'your_app.oidc.provider_logout'
+# OIDC_OP_LOGOUT_URL_METHOD = 'your_app.oidc.provider_logout'
 OIDC_RP_SIGN_ALGO='RS256'
 
 # Django Auth Backend
@@ -151,10 +157,5 @@ AUTHENTICATION_BACKENDS = (
 
 # Login URL
 LOGIN_URL = '/oidc/authenticate/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/customers/gql'
 LOGOUT_REDIRECT_URL = '/'
-
-# Session settings
-SESSION_COOKIE_SECURE = False  # True in production
-OIDC_STORE_ACCESS_TOKEN = True
-OIDC_STORE_ID_TOKEN = True

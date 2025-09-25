@@ -2,6 +2,7 @@ import os
 import graphene
 from graphene_django import DjangoObjectType
 from customers.models import Customer
+from custom_configs.models import CustomConfigs
 import requests
 from dotenv import load_dotenv
 
@@ -62,18 +63,20 @@ class CreateCustomer(graphene.Mutation):
     def mutate(self, info , first_name, last_name, phone_number , email, username, password):
         # Assuming  all customers are from Kenya 
 
-        if len(password) < 8 :
-            raise Exception ("Password length should be greater that 7 characters")
+        minimum_password_length  = CustomConfigs.objects.get(name='minimum_password_length').value
+
+        if len(password) <= int(minimum_password_length) :
+            raise Exception (f"Password length should be greater that {minimum_password_length} characters")
         customer = Customer(first_name=first_name, last_name=last_name , phone_number=phone_number , email=email)
         customer.save()
 
         KEYCLOAK_USERS_ENDPOINT = os.getenv('KEYCLOAK_USERS_ENDPOINT')
-        KEYCLOAK_ADMIN_LOGIN = os.getenv('KEYCLOAK_LOGIN_ENDPOINT')
+        KEYCLOAK_ADMIN_LOGIN = os.getenv('KEYCLOAK_LOGIN_ENDPOINT')        
 
         login_body = {
             "grant_type": "client_credentials",
-            "client_id": os.getenv('KEYCLOAK_ADMIN_CLIENT_ID'),
-            "client_secret": os.getenv('KEYCLOAK_ADMIN_CLIENT_SECRET')     
+            "client_id": CustomConfigs.objects.get(name='KEYCLOAK_ADMIN_CLIENT_ID').value,
+            "client_secret": CustomConfigs.objects.get(name='KEYCLOAK_ADMIN_CLIENT_SECRET').value   
         }
 
         resp = requests.post(KEYCLOAK_ADMIN_LOGIN, data=login_body, headers= {

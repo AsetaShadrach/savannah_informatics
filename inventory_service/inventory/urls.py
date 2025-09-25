@@ -23,19 +23,18 @@ from graphene_django.views import GraphQLView
 import customers.schema as customers
 import products.schema as products
 import orders.schema as orders
-from mozilla_django_oidc import views as oidc_views
+import custom_configs.schema as custom_configs
 
-def login_view(request):
-    return render(request, "login.html")
 
 urlpatterns = [
-    path('', login_view),
     path('admin/', admin.site.urls),
-    path("accounts/", include("django.contrib.auth.urls")),
     path('oidc/', include('mozilla_django_oidc.urls')),
-    # path('login/', oidc_views.OIDCAuthenticationRequestView.as_view(), name='login'),
-    # path('logout/', oidc_views.OIDCLogoutView.as_view(), name='logout'),
-    path("customers/gql", csrf_exempt(GraphQLView.as_view(graphiql=True, schema=customers.schema))),
-    path('orders/gql', csrf_exempt(GraphQLView.as_view(graphiql=True, schema=orders.schema))),
-    path("products/gql", csrf_exempt(GraphQLView.as_view(graphiql=True, schema=products.schema))),
+    path('customers/gql', GraphQLView.as_view(graphiql=True, schema=customers.schema)),
+    path('orders/gql', GraphQLView.as_view(graphiql=True, schema=orders.schema)),
+    path('products/gql', GraphQLView.as_view(graphiql=True, schema=products.schema)),
+    path('configs/gql', GraphQLView.as_view(graphiql=True, schema=custom_configs.schema)),
+    path('api/customers/gql', csrf_exempt(GraphQLView.as_view(graphiql=True, schema=customers.schema))),
+    path('api/orders/gql', csrf_exempt(GraphQLView.as_view(graphiql=True, schema=orders.schema))),
+    path('api/products/gql', csrf_exempt(GraphQLView.as_view(graphiql=True, schema=products.schema))),
+    path('api/configs/gql', csrf_exempt(GraphQLView.as_view(graphiql=True, schema=custom_configs.schema))),
 ]
